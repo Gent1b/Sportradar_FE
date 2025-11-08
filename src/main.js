@@ -1,3 +1,4 @@
+import { renderCalendar } from "./calendar";
 import { loadEvents } from "./data";
 
 const app = document.getElementById("app");
@@ -10,18 +11,9 @@ async function renderCalendarPlaceholder() {
 
   try {
     const events = await loadEvents();
+    const now = new Date();
+    renderCalendar(app,events,now.getFullYear(),now.getMonth());
     console.log(events);
-
-    app.innerHTML=`
-    <h2>Sports Event Calendar</h2>
-    <ul>
-        ${events.map(e=>`
-            <li>
-             ${e.dateVenue} - ${e.sport}: ${e.homeTeam?.name ?? "TBD"} vs ${e.awayTeam?.name ?? "TBD"}
-            </li>
-            `).join("")}
-    </ul>
-    `;
   } catch (err)
   {
     console.error("Error loading events:",err);
