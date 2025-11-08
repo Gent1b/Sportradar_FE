@@ -1,10 +1,32 @@
+import { loadEvents } from "./data";
+
 const app = document.getElementById("app");
 
-function renderCalendarPlaceholder() {
+async function renderCalendarPlaceholder() {
   app.innerHTML = `
     <h2>Sports Event Calendar</h2>
-    <p>This is where the calendar will be displayed.</p>
+    <p>Loading events...</p>
   `;
+
+  try {
+    const events = await loadEvents();
+    console.log(events);
+
+    app.innerHTML=`
+    <h2>Sports Event Calendar</h2>
+    <ul>
+        ${events.map(e=>`
+            <li>
+             ${e.dateVenue} - ${e.sport}: ${e.homeTeam?.name ?? "TBD"} vs ${e.awayTeam?.name ?? "TBD"}
+            </li>
+            `).join("")}
+    </ul>
+    `;
+  } catch (err)
+  {
+    console.error("Error loading events:",err);
+    app.innerHTML = `<p style="color:red;">Failed to load events. </p>`
+  }
 }
 
 function renderAddEventPlaceholder() {
