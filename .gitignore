@@ -1,0 +1,13 @@
+# Node
+node_modules/
+package-lock.json
+
+
+# Editor settings
+.vscode/
+.idea/
+.DS_Store
+
+# Environment files
+.env
+
