@@ -3,9 +3,31 @@ import { renderEventDetails } from "./eventDetails.js";
 import { sportColors, DEFAULT_COLOR } from "./constants.js";
 import { attachTooltips } from "./tooltip.js";
 
-export function renderCalendar(app, events, year, month) {
+export function renderCalendar(app, allEvents, year, month, selectedSport = "") {
+  // reload latest version from local storage
+  const stored = localStorage.getItem("events");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      // accept either a plain array or { data: [...] }
+      allEvents = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.data)
+        ? parsed.data
+        : [];
+    } catch {
+      console.warn("Invalid localStorage data, ignoring.");
+    }
+  }
+  if (!Array.isArray(allEvents)) allEvents = [];
+
   // get all days in the month
   const days = getDaysInMonth(year, month);
+
+  // filter the view but preserve the data
+  const visibleEvents = selectedSport
+    ? allEvents.filter((e) => e.sport?.toLowerCase() === selectedSport)
+    : allEvents;
 
   // render toolbar with month name and navigation buttons
   app.innerHTML = `
@@ -17,7 +39,6 @@ export function renderCalendar(app, events, year, month) {
   </div>
   <div class="filters">
     <select class="filter-dropdown">
-      <option value="">All Sports</option>
       <!-- add more dynamically if needed -->
     </select>
   </div>
@@ -28,6 +49,29 @@ export function renderCalendar(app, events, year, month) {
     <div class="legend"></div>
   `;
   window.scrollTo(0, 0);
+
+  // Populate sports dropdown dynamically
+  const filterSelect = app.querySelector(".filter-dropdown");
+  const sports = Array.from(
+    new Set(allEvents.map((e) => e.sport?.toLowerCase()).filter(Boolean))
+  ).sort();
+
+  // Mark All Sports as selected
+  filterSelect.innerHTML = `<option value="">All Sports</option>`;
+  sports.forEach((sport) => {
+    const opt = document.createElement("option");
+    opt.value = sport;
+    opt.textContent = sport[0].toUpperCase() + sport.slice(1);
+    if (sport === selectedSport) opt.selected = true;
+    filterSelect.appendChild(opt);
+  });
+
+  // Handle filter changes
+  filterSelect.addEventListener("change", () => {
+    const selected = filterSelect.value;
+    // rerender with the full list
+    renderCalendar(app, allEvents, year, month, selected);
+  });
 
   const grid = app.querySelector(".calendar");
   const weekdayRow = app.querySelector(".weekday-row");
@@ -51,7 +95,7 @@ export function renderCalendar(app, events, year, month) {
   // fill in day cells
   for (const d of days) {
     const dateStr = d.toLocaleDateString("en-CA");
-    const dayEvents = events.filter((e) => e.dateVenue === dateStr);
+    const dayEvents = visibleEvents.filter((e) => e.dateVenue === dateStr);
 
     const cell = document.createElement("div");
     cell.className = "day";
@@ -64,11 +108,18 @@ export function renderCalendar(app, events, year, month) {
         groupedBySport[sport] = (groupedBySport[sport] || 0) + 1;
       });
       // determine color for this day
-      const rawSport = dayEvents.find((ev) => typeof ev.sport === "string")?.sport || "football";
+      const rawSport =
+        dayEvents.find((ev) => typeof ev.sport === "string")?.sport ||
+        "football";
       const color = sportColors[rawSport.toLowerCase()] || DEFAULT_COLOR;
       // prepare tooltip text listing all events on this date
       const tooltipText = dayEvents
-        .map(ev => `${ev.homeTeam?.name || "TBD"} vs ${ev.awayTeam?.name || "TBD"} (${ev.status})`)
+        .map(
+          (ev) =>
+            `${ev.homeTeam?.name || "TBD"} vs ${
+              ev.awayTeam?.name || "TBD"
+            } (${ev.status})`
+        )
         .join("\n");
       cell.dataset.tooltip = tooltipText;
       // create dot indicators for each sport (with count)
@@ -91,7 +142,8 @@ export function renderCalendar(app, events, year, month) {
     // Clicking a day with events opens the event details view for that date
     cell.addEventListener("click", () => {
       if (!dayEvents.length) return;
-      renderEventDetails(app, events, dateStr);
+      const contextEvents = selectedSport ? visibleEvents : allEvents;
+      renderEventDetails(app, contextEvents, dateStr);
     });
   }
 
@@ -104,11 +156,13 @@ export function renderCalendar(app, events, year, month) {
     <h4>Sport Legend</h4>
     <div class="legend-items">
       ${Object.entries(sportColors)
-        .map(([sport, color]) => 
+        .map(
+          ([sport, color]) => 
            `<div class="legend-item">
               <span class="legend-dot" style="background:${color}"></span>
               <span class="legend-label">${sport}</span>
-            </div>`)
+            </div>`
+        )
         .join("")}
     </div>
   `;
@@ -116,10 +170,22 @@ export function renderCalendar(app, events, year, month) {
   // month navigation buttons
   document.getElementById("prevMonth").addEventListener("click", () => {
     const prev = new Date(year, month - 1);
-    renderCalendar(app, events, prev.getFullYear(), prev.getMonth());
+    renderCalendar(
+      app,
+      allEvents,
+      prev.getFullYear(),
+      prev.getMonth(),
+      selectedSport
+    ); 
   });
   document.getElementById("nextMonth").addEventListener("click", () => {
     const next = new Date(year, month + 1);
-    renderCalendar(app, events, next.getFullYear(), next.getMonth());
+    renderCalendar(
+      app,
+      allEvents,
+      next.getFullYear(),
+      next.getMonth(),
+      selectedSport
+    ); 
   });
 }

@@ -35,22 +35,18 @@
 }
 
 
-.filters {
-  display: flex;
-  align-items: center;
-}
-
 .filter-dropdown {
   background: #1f2937;
   color: var(--text);
-  border: none;
-  border-radius: 6px;
-  padding: 0.4rem 0.8rem;
+  border: 1px solid #2b3645;
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
   font-size: 0.9rem;
 }
-.filter-dropdown:focus {
-  outline: 2px solid var(--primary);
+.filter-dropdown:hover {
+  background: #273349;
 }
+
 
 .weekday-row {
   display: grid;

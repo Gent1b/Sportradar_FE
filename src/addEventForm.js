@@ -116,14 +116,20 @@ export function renderAddEventForm(app, events, ctx) {
     const f = form.elements;
 
     // form validation
-    if (!f.sport.value || !f.date.value || !f.time.value || !f.homeTeam.value || !f.awayTeam.value) {
+    if (
+      !f.sport.value ||
+      !f.date.value ||
+      !f.time.value ||
+      !f.homeTeam.value ||
+      !f.awayTeam.value
+    ) {
       alert("Please fill Sport, Date, Time, Home Team, and Away Team.");
       return;
     }
 
     const ev = {
-      dateVenue: f.date.value,               // YYYY-MM-DD
-      timeVenueUTC: f.time.value,            // HH:mm
+      dateVenue: f.date.value, // YYYY-MM-DD
+      timeVenueUTC: f.time.value, // HH:mm
       sport: f.sport.value,
       homeTeam: { name: f.homeTeam.value.trim() },
       awayTeam: { name: f.awayTeam.value.trim() },
@@ -149,11 +155,25 @@ export function renderAddEventForm(app, events, ctx) {
       };
     }
 
-    // Add in-memory and go to that month in calendar view
-    events.push(ev);
+    // Save to localStorage as a plain array (also accepts existing { data: [...] })
+    let arr = [];
+    try {
+      const raw = localStorage.getItem("events");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        arr = Array.isArray(parsed)
+          ? parsed
+          : Array.isArray(parsed?.data)
+          ? parsed.data
+          : [];
+      }
+    } catch {}
+    arr.push(ev);
+    localStorage.setItem("events", JSON.stringify(arr));
+
     const d = new Date(f.date.value + "T00:00:00Z");
     const y = isNaN(d) ? ctx.year : d.getFullYear();
     const m = isNaN(d) ? ctx.month : d.getMonth();
-    renderCalendar(app, events, y, m);
+    renderCalendar(app, arr, y, m);
   });
 }
