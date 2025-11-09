@@ -1,0 +1,109 @@
+.event-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.event-details-page.list { align-items: stretch; }
+
+.event-details-page.single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5rem 2rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.event-card {
+  width: 100%;
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+  line-height: 1.5;
+}
+.event-card h2 {
+  margin: 0.5rem 0;
+  color: var(--text);
+}
+.event-card.clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.event-card.clickable:hover {
+  background: #1e293b;
+}
+
+.event-details-page.single .event-card {
+  max-width: 1200px;
+  padding: 3rem 3.25rem;
+  border-left-width: 8px;
+  line-height: 1.9;
+  font-size: 1.2rem;
+  transform: scale(1.03);
+  transition: transform 0.2s ease;
+}
+.event-details-page.single .event-card h2 {
+  font-size: 2rem;
+  margin: 0.25rem 0 1rem;
+}
+
+.event-meta p {
+  margin: 0.2rem 0;
+  color: var(--muted);
+}
+
+.event-details-page.list .event-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem 0.75rem;
+}
+.event-details-page.list .event-meta p {
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .event-details-page.list .event-meta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.event-details-page.single .event-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.25rem;
+  padding: 1rem 1.1rem;
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+}
+.event-details-page.single .event-meta p {
+  margin: 0;
+}
+
+.sport-badge {
+  display: inline-block;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.view-btn {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 0.35rem 0.7rem;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s;
+}
+.view-btn:hover {
+  background: #1f2937;
+  border-color: #475569;
+}
