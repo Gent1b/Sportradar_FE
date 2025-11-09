@@ -1,7 +1,9 @@
+import { renderAddEventForm } from "./addEventForm.js";
 import { renderCalendar } from "./calendar.js";
 import { loadEvents } from "./data.js";
 
 const app = document.getElementById("app");
+let events = []; // shared in-memory event list
 
 
 async function renderCalendarPlaceholder() {
@@ -10,7 +12,9 @@ async function renderCalendarPlaceholder() {
     <p>Loading events...</p>
   `;
   try {
-    const events = await loadEvents();
+    if (events.length === 0) {
+      events = await loadEvents(); // only load once
+    }
     const now = new Date();
     renderCalendar(app, events, now.getFullYear(), now.getMonth());
   } catch (err) {
@@ -19,12 +23,6 @@ async function renderCalendarPlaceholder() {
   }
 }
 
-function renderAddEventPlaceholder() {
-  app.innerHTML = `
-    <h2>Add New Event</h2>
-    <p>Form will go here.</p>
-  `;
-}
 
 // Handle navigation button clicks to switch views
 document.querySelectorAll("nav button").forEach((btn) => {
@@ -32,8 +30,10 @@ document.querySelectorAll("nav button").forEach((btn) => {
     if (btn.dataset.view === "calendar") {
       renderCalendarPlaceholder();
     }
+    // open add event form
     if (btn.dataset.view === "add") {
-      renderAddEventPlaceholder();
+      const now = new Date();
+      renderAddEventForm(app, events, { year: now.getFullYear(), month: now.getMonth() });
     }
   });
 });
