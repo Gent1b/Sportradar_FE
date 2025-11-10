@@ -1,6 +1,6 @@
-import { getDaysInMonth, getMonthLabel } from "./utils.js";
+import { getDaysInMonth, getMonthLabel } from "../utils.js";
 import { renderEventDetails } from "./eventDetails.js";
-import { sportColors, DEFAULT_COLOR } from "./constants.js";
+import { sportColors, DEFAULT_COLOR } from "../constants.js";
 import { attachTooltips } from "./tooltip.js";
 
 export function renderCalendar(app, allEvents, year, month, selectedSport = "") {

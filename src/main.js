@@ -1,5 +1,5 @@
-import { renderAddEventForm } from "./addEventForm.js";
-import { renderCalendar } from "./calendar.js";
+import { renderAddEventForm } from "./modules/addEventForm.js";
+import { renderCalendar } from "./modules/calendar.js";
 import { loadEvents } from "./data.js";
 
 const app = document.getElementById("app");

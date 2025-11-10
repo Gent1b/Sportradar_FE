@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
+    "test": "vitest",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -13,5 +14,9 @@
   "description": "",
   "dependencies": {
     "vite": "^6.4.1"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.0.10",
+    "vitest": "^4.0.8"
   }
 }

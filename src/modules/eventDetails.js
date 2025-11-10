@@ -1,5 +1,5 @@
 import { renderCalendar } from "./calendar.js";
-import { sportColors, DEFAULT_COLOR } from "./constants.js";
+import { sportColors, DEFAULT_COLOR } from "../constants.js";
 
 function renderSingleEvent(app, event, events, fromDate) {
   const color = sportColors[event.sport?.toLowerCase()] || DEFAULT_COLOR;
