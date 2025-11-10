@@ -39,7 +39,6 @@ export function renderCalendar(app, allEvents, year, month, selectedSport = "") 
   </div>
   <div class="filters">
     <select class="filter-dropdown">
-      <!-- add more dynamically if needed -->
     </select>
   </div>
 </div>

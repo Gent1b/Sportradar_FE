@@ -1,0 +1,60 @@
+During this project I used ChatGPT-5 as a tool to help me in the development process. I tried to write and understood everything myself as I always do, but I also used AI in cases where i need write boilerplate code or also to ask it for help when I got stuck in some specific parts. 
+Below I explain exactly where I used it and what changed.
+---
+
+1. Calendar (calendar.js)
+
+I built the main calendar myself generating days, navigation, rendering, and for the most part it worked fine, but the weekday alignment was wrong: every month started with Monday as its first day which is not a real representation and i got stuck here for some time until i decided to ask ChatGPT for help.  
+I pasted the calendar.js file and asked ChatGPT something like:  
+> “can you check why my calendar always starts on monday? the first day is always wrong”
+
+It looked through my code and explained that getDay() in JavaScript starts counting from Sunday as 0.
+That was the reason my offset was wrong. It showed me how to shift the days correctly, and after trying a few small edits, I ended up replacing that part with:
+```js
+const firstDayIndex = (days[0].getDay() + 6) % 7;
+```
+Later, I also wanted to show multiple sports per day instead of one color dot. I asked AI for ideas, and it suggested grouping events by sport and rendering colored dots. I rewrote that part myself but based on that idea.
+
+---
+
+2. Event Details (eventDetails.js)
+
+At first, whenever I clicked on a day that had only one event, it still showed a list instead of opening the event details directly.  
+I asked AI:
+> “when clicking a date with one event it still shows a list, how can i fix this?”
+
+AI suggested splitting the code into two functions one for a single event and one for multiple.  
+So I made:
+- `renderSingleEvent()` for one event
+- `renderEventDetails()` for lists
+
+Then added:
+```js
+if (dayEvents.length === 1) {
+  renderSingleEvent(app, dayEvents[0], events);
+  return;
+}
+```
+This fixed it the problem that i was having, and at the same time also made the code easier to read and understand .
+
+---
+
+3. Add Event Form (addEventForm.js)
+
+I already knew what fields I wanted (sport, date, teams, goals, etc.), but I didn’t want to waste time typing all the HTML structure manually.  
+So I asked AI for a clean form layout with grid, labels, and buttons. It generated a base version that I edited to match what i wanted it to look like.  
+I wrote all validation, event object creation, and saving to localStorage myself.
+
+
+---
+
+4. Project structure and docs
+
+AI helped me think about the folder layout (`src/modules`, `src/tests`, etc.) and write a first draft for the README.  
+I later simplified and rewrote both to sound more like my own writing.
+
+---
+
+In general I ask AI a lot of questions when I am working on something, and to me it is a very useful tool that i have learned to use responsibly.
+I have learned Javascript before we had access to tools like ChatGPT, so i believe that i have a strong foundation and understandment of code and domain in general.
+Now i try to use it mostly when i want to save myself time with writing the code but not about thinking about it, i try to use my brain as much as possible and come up with the solutions myself, but when there is boilerplate code that needs to be written i prefer to use AI to speed this process up, and thats what I also did in some parts of this project.
